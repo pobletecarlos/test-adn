@@ -1,0 +1,35 @@
+version: '3.3'
+services:
+  app:
+    build: .
+    container_name: app
+    working_dir: /var/www
+    volumes:
+      - ./.deploy/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks: 
+      - red
+
+  front:
+    container_name: front
+    networks: 
+      - red
+    ports: 
+      - "80:80"
+    build: 
+      context: front-end
+  
+  db:
+    container_name: db
+    env_file: ./.deploy/mysql/.database.env
+    networks: 
+      - red
+    ports: 
+      - "3306:3306"  
+    volumes:
+      - 'db-volume:/var/lib/mysql'
+    image: 'mariadb:latest'
+
+networks: 
+  red:
+volumes:
+  db-volume: 
